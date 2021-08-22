@@ -1,20 +1,19 @@
 library globals;
-
+import 'package:flutter/rendering.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/widgets.dart';
+import 'package:line_icons/line_icons.dart';
 import 'my-globals.dart' as globals;
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sizer/sizer.dart';
 
 main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
-  SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarBrightness: Brightness.light));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarBrightness: Brightness.light));
   runApp(MyApp());
 }
 // ignore: must_be_immutable
@@ -22,7 +21,9 @@ main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return NeumorphicApp(debugShowCheckedModeBanner: false, home: HomePage());
+    return NeumorphicApp(
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false, home: HomePage());
   }
 }
 
@@ -32,6 +33,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   Widget myListView() {
     return new ListView.builder(
         physics: BouncingScrollPhysics(),
@@ -44,13 +46,13 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 globals.tasks.removeAt(index);
                 Fluttertoast.showToast(
-                    msg: "Deleted",
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.white70,
-                    textColor: Colors.black54,
-                    fontSize: 18.0);
+                  msg: "Deleted",
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Colors.white70,
+                  textColor: Colors.black54,
+                  fontSize: 18.0);
               });
             },
             child: Container(
@@ -59,21 +61,22 @@ class _HomePageState extends State<HomePage> {
                 color: NeumorphicTheme.baseColor(context),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Neumorphic(
-                child: ListTile(
-                  onTap: () {
-                    HapticFeedback.vibrate();
-                    globals.myIndex = index;
-                    globals.titleEditorcont.text = globals.tasks[index].title;
-                    globals.subtitleEditorcont.text =
-                        globals.tasks[index].subtitle;
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => taskManager()));
-                  },
-                  enableFeedback: true,
-                  title: Text(item.title),
-                  subtitle: Text(item.subtitle),
-                  trailing: CheckButton(),
+              child: NeumorphicButton(
+                onPressed: (){
+                  HapticFeedback.vibrate();
+                  globals.myIndex = index;
+                  globals.titleEditorcont.text = globals.tasks[index].title;
+                  globals.subtitleEditorcont.text = globals.tasks[index].subtitle;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => taskManager()));
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: ListTile(
+                    enableFeedback: true,
+                    title: Text(item.title),
+                    subtitle: Text(item.subtitle),
+                    trailing: CheckButton(),
+                  ),
                 ),
               ),
             ),
@@ -84,14 +87,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (globals.tasks.length == 0) {
-      globals.validatorColor = Colors.black54;
+      setState(() {
+        globals.validatorColor = Colors.black54;
+      });
     } else if (globals.tasks.length > 0) {
-      globals.validatorColor = Colors.transparent;
+      setState(() {
+        globals.validatorColor = Colors.transparent;
+      });
     }
-    return Sizer(
-        // ignore: non_constant_identifier_names
-        builder: (context, orientation, DeviceType) {
-      return NeumorphicApp(
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return NeumorphicApp(
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             backgroundColor: Colors.white,
@@ -100,16 +108,16 @@ class _HomePageState extends State<HomePage> {
               backendColor: Colors.blue,
               child: Container(
                 alignment: Alignment.center,
-                width: 100.w,
-                height: 100.h,
+                width: 100*screenWidth,
+                height: 100*screenHeight,
                 child: Stack(children: [
                   Neumorphic(child: myListView()),
                   addButton(),
                 ]),
               ),
-            )),
-      );
-    });
+            )
+          ),
+        );
   }
 }
 
@@ -120,11 +128,12 @@ class CheckButton extends StatefulWidget {
 
 class _CheckButtonState extends State<CheckButton> {
   bool done = false;
+
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
+    return NeumorphicButton(
       style: NeumorphicStyle(
-        border: NeumorphicBorder.none(),
+        //border: NeumorphicBorder.none(),
       ),
       child: NeumorphicCheckbox(
         value: done,
@@ -140,6 +149,7 @@ class _CheckButtonState extends State<CheckButton> {
 
 class CreateTaskPage extends StatefulWidget {
   final String empty = '';
+
   @override
   _CreateTaskPageState createState() => _CreateTaskPageState();
 }
@@ -147,147 +157,148 @@ class CreateTaskPage extends StatefulWidget {
 class _CreateTaskPageState extends State<CreateTaskPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: null,
-      backgroundColor: Colors.grey[200],
-      body: NeumorphicBackground(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 58.0),
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Neumorphic(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 28.0, horizontal: 30),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.black54,
-                        ),
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Task Title',
-                            hintStyle: TextStyle(
-                              color: Colors.black38,
-                            )),
-                        controller: globals.titlecont,
-                      ),
-                    ),
-                    Neumorphic(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 28.0, horizontal: 30),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                      child: TextField(
-                        style: TextStyle(
-                          color: Colors.black54,
-                        ),
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Task subtitle',
-                            hintStyle: TextStyle(
-                              color: Colors.black38,
-                            )),
-                        controller: globals.subtitlecont,
-                      ),
-                    ),
-                  ],
-                ),
-                Positioned(
-                    bottom: 10,
-                    right: 25,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Neumorphic(
-                          margin: EdgeInsets.all(18),
-                          style: NeumorphicStyle(
-                            depth: 5.0,
+    var titleFocusNode = FocusNode();
+    var subtitleFocusNode = FocusNode();
+    return NeumorphicApp(
+      themeMode: ThemeMode.light,
+      home: Scaffold(
+        appBar: null,
+        backgroundColor: Colors.grey[200],
+        body: NeumorphicBackground(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 58.0),
+              child: Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      NeumorphicButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          FocusScope.of(context).requestFocus(titleFocusNode);
+                        },
+                        margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
+                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: TextField(
+                          focusNode: titleFocusNode,
+                          style: TextStyle(
+                            color: Colors.black54,
                           ),
-                          child: Container(
-                            width: 95,
-                            height: 65,
-                            child: TextButton(
-                              onPressed: () {
-                                if (globals.titlecont.text.isNotEmpty &&
-                                    globals.subtitlecont.text.isNotEmpty) {
-                                  globals.tasks.add(globals.Task(
-                                      globals.titlecont.text,
-                                      globals.subtitlecont.text,
-                                      globals.myIndex));
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyApp()),
-                                  );
-                                  globals.titlecont.text =
-                                      CreateTaskPage().empty;
-                                  globals.subtitlecont.text =
-                                      CreateTaskPage().empty;
-                                } else {
-                                  HapticFeedback.heavyImpact();
-                                  Fluttertoast.showToast(
-                                      msg:
-                                          "You have to fill all fields to make a new Task",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.white70,
-                                      textColor: Colors.black54,
-                                      fontSize: 18.0);
-                                }
-                              },
-                              child: DefaultTextStyle(
-                                child: Text('Add'),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.blueAccent),
-                              ),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Task Title',
+                              hintStyle: TextStyle(
+                                color: Colors.black38,
+                              )),
+                          controller: globals.titlecont,
+                        ),
+                      ),
+                      NeumorphicButton(
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          FocusScope.of(context).requestFocus(subtitleFocusNode);
+                        },
+                        margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
+                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        child: TextField(
+                          focusNode: subtitleFocusNode,
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Task subtitle',
+                              hintStyle: TextStyle(
+                                color: Colors.black38,
+                              )),
+                          controller: globals.subtitlecont,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                      bottom: 10,
+                      right: 25,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          NeumorphicButton(
+                            margin: EdgeInsets.all(18),
+                            style: NeumorphicStyle(
+                              depth: 5.0,
                             ),
-                          ),
-                        ),
-                      ],
-                    )),
-                Positioned(
-                    bottom: 10,
-                    left: 25,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Neumorphic(
-                          margin: EdgeInsets.all(18),
-                          style: NeumorphicStyle(
-                            depth: 5.0,
-                          ),
-                          child: Container(
-                            width: 95,
-                            height: 65,
-                            child: TextButton(
-                              onPressed: () {
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 75,
+                              height: 50,
+                                child: DefaultTextStyle(
+                                  child: Text('Add'),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 20, color: Colors.blueAccent),
+                                ),
+
+                              ),
+                            onPressed: (){
+                              if (globals.titlecont.text.isNotEmpty &&
+                                  globals.subtitlecont.text.isNotEmpty) {
+                                globals.tasks.add(globals.Task(
+                                    globals.titlecont.text, globals.subtitlecont.text, globals.myIndex));
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyApp()),
+                                  MaterialPageRoute(builder: (context) => MyApp()),
                                 );
-                              },
+                                globals.titlecont.text = CreateTaskPage().empty;
+                                globals.subtitlecont.text = CreateTaskPage().empty;
+                              } else {
+                                HapticFeedback.heavyImpact();
+                                Fluttertoast.showToast(
+                                    msg: "You have to fill all fields to make a new Task",
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 2,
+                                    backgroundColor: Colors.white70,
+                                    textColor: Colors.black54,
+                                    fontSize: 18.0);
+                              }
+                            },
+                          ),
+                        ],
+                      )),
+                  Positioned(
+                      bottom: 10,
+                      left: 25,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          NeumorphicButton(
+                            margin: EdgeInsets.all(18),
+                            style: NeumorphicStyle(
+                              depth: 5.0,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => MyApp()),
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 75,
+                              height: 50,
                               child: DefaultTextStyle(
                                 child: Text('Cancel'),
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.black54),
+                                    fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black54
                               ),
-                            ),
+                              ),
                           ),
                         ),
                       ],
-                    ))
-              ],
+                    )
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -312,34 +323,27 @@ class _addButtonState extends State<addButton> {
         child: Row(children: [
           Text(
             'Press here to add Tasks  ',
-            style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.bold,
-                color: globals.validatorColor),
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: globals.validatorColor),
           ),
           Icon(
-            Icons.arrow_right_alt_sharp,
+            Icons.arrow_right_alt_rounded,
             color: globals.validatorColor,
             size: 40,
           ),
-          Neumorphic(
-            style: NeumorphicStyle(
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(8)),
-            ),
-            margin: EdgeInsets.all(18),
-            child: IconButton(
-              onPressed: () {
-                HapticFeedback.vibrate();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CreateTaskPage()),
-                );
-              },
-              icon: NeumorphicIcon(
-                Icons.add,
-                size: 35,
-                style: NeumorphicStyle(color: Colors.black54),
-              ),
+          NeumorphicButton(
+            onPressed: () {
+              HapticFeedback.vibrate();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateTaskPage()),
+              );
+            },
+            margin: EdgeInsets.all(24),
+            child: Container(
+              height: 40,
+              width: 26,
+              alignment: Alignment.center,
+              child: Icon(Icons.add, color: Colors.black54,size: 28.0,)
             ),
           ),
         ]));
@@ -356,8 +360,10 @@ class taskManager extends StatefulWidget {
 class _taskManagerState extends State<taskManager> {
   @override
   Widget build(BuildContext context) {
-    return Sizer(builder: (context, orientation, deviceType) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
       return NeumorphicApp(
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: null,
@@ -371,15 +377,15 @@ class _taskManagerState extends State<taskManager> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Neumorphic(
+                        NeumorphicButton(
+                          onPressed: (){},
                           margin: const EdgeInsets.only(
                             left: 28.0,
                             right: 28.0,
                             top: 60.0,
                             bottom: 28,
                           ),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: TextField(
                             style: TextStyle(
                               color: Colors.black54,
@@ -393,11 +399,10 @@ class _taskManagerState extends State<taskManager> {
                             controller: globals.titleEditorcont,
                           ),
                         ),
-                        Neumorphic(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 28.0, horizontal: 30),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        NeumorphicButton(
+                          onPressed: (){},
+                          margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           child: TextField(
                             style: TextStyle(
                               color: Colors.black54,
@@ -414,208 +419,180 @@ class _taskManagerState extends State<taskManager> {
                       ],
                     ),
                     Positioned(
-                      bottom: 4.h,
+                      bottom: 0.04*screenHeight,
                       child: Container(
-                        width: 100.w,
+                        width: screenWidth,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Neumorphic(
-                                  style: NeumorphicStyle(
-                                    depth: 5.0,
-                                  ),
-                                  child: Container(
-                                    width: 23.w,
-                                    height: 8.h,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        globals.titlecont.text =
-                                            CreateTaskPage().empty;
-                                        globals.subtitlecont.text =
-                                            CreateTaskPage().empty;
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => MyApp()),
-                                        );
-                                      },
-                                      child: DefaultTextStyle(
-                                        child: Text('Cancel'),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: Colors.black54),
-                                      ),
-                                    ),
-                                  ),
+                            NeumorphicButton(
+                              onPressed: () {
+                                globals.titlecont.text = CreateTaskPage().empty;
+                                globals.subtitlecont.text = CreateTaskPage().empty;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => MyApp()),
+                                );
+                              },
+                              style: NeumorphicStyle(
+                                depth: 5.0,
+                              ),
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 75,
+                                height: 50,
+                                child: DefaultTextStyle(
+                                  child: Text('Cancel'),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black54),
                                 ),
-                              ],
+                              ),
                             ),
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Neumorphic(
-                                  style: NeumorphicStyle(
-                                    depth: 5.0,
-                                  ),
-                                  child: Container(
-                                    width: 23.w,
-                                    height: 8.h,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (_) => AlertDialog(
-                                                  backgroundColor:
-                                                      Color(0xffefefef),
-                                                  title: Text(
-                                                      'This cant be undone'),
-                                                  content: Text(
-                                                      'Press Confirm to Delete'),
-                                                  actions: <Widget>[
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        Neumorphic(
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              print(globals
-                                                                  .myIndex);
-                                                              globals.tasks
-                                                                  .removeAt(globals
-                                                                      .myIndex);
-                                                              print(globals
-                                                                  .tasks);
-                                                              Navigator.pop(_);
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            MyApp()),
-                                                              );
-                                                              Fluttertoast.showToast(
-                                                                  msg:
-                                                                      "Deleted",
-                                                                  toastLength: Toast
-                                                                      .LENGTH_LONG,
-                                                                  gravity:
-                                                                      ToastGravity
-                                                                          .BOTTOM,
-                                                                  timeInSecForIosWeb:
-                                                                      2,
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .white70,
-                                                                  textColor: Colors
-                                                                      .black54,
-                                                                  fontSize:
-                                                                      18.0);
-                                                            },
-                                                            child: Text(
-                                                              'Confirm',
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .blueAccent,
-                                                              ),
-                                                            ),
-                                                          ),
+                            NeumorphicButton(
+                              style: NeumorphicStyle(
+                                depth: 5.0,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      backgroundColor: Color(0xeeefefef),
+                                      actions: <Widget>[
+                                        Container(
+                                          height: screenHeight*0.3,
+                                          width: screenWidth*0.9,
+                                          padding: EdgeInsets.symmetric(horizontal: 20),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Icon(CupertinoIcons.delete_simple,size: 45,color: Colors.redAccent,),
+                                              Text('Are you sure?',
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 20,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Text("then You can't recover this note.",
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 20,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  NeumorphicButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(_);
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => taskManager()),
+                                                        );
+                                                      },
+
+                                                    child: Container(
+                                                      margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
+                                                      alignment: Alignment.center,
+                                                      child: Text(
+                                                        'Cancel',
+                                                        style: TextStyle(
+                                                          color: Colors.black87,
                                                         ),
-                                                        Neumorphic(
-                                                            child: TextButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(_);
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          taskManager()),
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            'Cancel',
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black54),
-                                                          ),
-                                                        ))
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ],
-                                                ));
-                                      },
-                                      child: DefaultTextStyle(
-                                        child: Text('Delete'),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: Colors.redAccent),
-                                      ),
-                                    ),
-                                  ),
+                                                  ),
+                                                  NeumorphicButton(
+                                                    onPressed: () {
+                                                      print(globals.myIndex);
+                                                      globals.tasks.removeAt(globals.myIndex);
+                                                      print(globals.tasks);
+                                                      Navigator.pop(_);
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => MyApp()),
+                                                      );
+                                                      Fluttertoast.showToast(
+                                                          msg: "Deleted",
+                                                          toastLength: Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity.BOTTOM,
+                                                          timeInSecForIosWeb: 2,
+                                                          backgroundColor: Colors.white70,
+                                                          textColor: Colors.black54,
+                                                          fontSize: 18.0);
+                                                    },
+                                                    child: Container(
+                                                      margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
+                                                      alignment: Alignment.center,
+                                                      child: Text(
+                                                        'Confirm',
+                                                        style: TextStyle(
+                                                          color: Colors.redAccent,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 75,
+                                height: 50,
+                                child: DefaultTextStyle(
+                                  child: Text('Delete'),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.redAccent),
                                 ),
-                              ],
+                              ),
                             ),
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Neumorphic(
-                                  style: NeumorphicStyle(
-                                    depth: 5.0,
-                                  ),
-                                  child: Container(
-                                    width: 23.w,
-                                    height: 8.h,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        if (globals.titleEditorcont.text
-                                                .isNotEmpty &&
-                                            globals.subtitleEditorcont.text
-                                                .isNotEmpty) {
-                                          globals.tasks[globals.myIndex].title =
-                                              globals.titleEditorcont.text;
-                                          globals.tasks[globals.myIndex]
-                                                  .subtitle =
-                                              globals.subtitleEditorcont.text;
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MyApp()),
-                                          );
-                                          globals.titlecont.text =
-                                              CreateTaskPage().empty;
-                                          globals.subtitlecont.text =
-                                              CreateTaskPage().empty;
-                                        } else {
-                                          HapticFeedback.lightImpact();
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "You have to fill all fields to edit this Task",
-                                              toastLength: Toast.LENGTH_LONG,
-                                              gravity: ToastGravity.BOTTOM,
-                                              timeInSecForIosWeb: 2,
-                                              backgroundColor: Colors.white70,
-                                              textColor: Colors.black54,
-                                              fontSize: 18.0);
-                                        }
-                                      },
-                                      child: DefaultTextStyle(
-                                        child: Text('Done'),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            color: Colors.blueAccent),
-                                      ),
-                                    ),
-                                  ),
+                            NeumorphicButton(
+                              onPressed: () {
+                                if (globals.titleEditorcont.text.isNotEmpty &&
+                                    globals.subtitleEditorcont.text.isNotEmpty) {
+                                  globals.tasks[globals.myIndex].title = globals.titleEditorcont.text;
+                                  globals.tasks[globals.myIndex].subtitle =
+                                      globals.subtitleEditorcont.text;
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => MyApp()),
+                                  );
+                                  globals.titlecont.text = CreateTaskPage().empty;
+                                  globals.subtitlecont.text = CreateTaskPage().empty;
+                                } else {
+                                  HapticFeedback.lightImpact();
+                                  Fluttertoast.showToast(
+                                      msg: "You have to fill all fields to edit this Task",
+                                      toastLength: Toast.LENGTH_LONG,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 2,
+                                      backgroundColor: Colors.white70,
+                                      textColor: Colors.black54,
+                                      fontSize: 18.0);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 75,
+                                height: 50,
+                                child: DefaultTextStyle(
+                                  child: Text('Done'),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.blueAccent),
                                 ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
@@ -628,6 +605,5 @@ class _taskManagerState extends State<taskManager> {
           ),
         ),
       );
-    });
   }
 }

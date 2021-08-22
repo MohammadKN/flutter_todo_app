@@ -1,11 +1,8 @@
 library globals;
 
-import 'my-globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 int myIndex = 0;
 final titlecont = TextEditingController(),
@@ -33,5 +30,3 @@ class Days {
   Days(this.saturday, this.sunday, this.monday, this.tuesday, this.wednesday,
       this.thursday, this.friday);
 }
-
-//ListView
