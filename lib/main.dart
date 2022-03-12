@@ -1,12 +1,9 @@
 library globals;
-import 'package:flutter/rendering.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_glow/flutter_glow.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:line_icons/line_icons.dart';
 import 'my-globals.dart' as globals;
 
 main() {
@@ -16,7 +13,6 @@ main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarBrightness: Brightness.light));
   runApp(MyApp());
 }
-// ignore: must_be_immutable
 
 class MyApp extends StatelessWidget {
   @override
@@ -73,8 +69,16 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: ListTile(
                     enableFeedback: true,
-                    title: Text(item.title),
-                    subtitle: Text(item.subtitle),
+                    title: GlowText(
+                      item.title,
+                      glowColor: Colors.black12,
+                      blurRadius: 10,
+                    ),
+                    subtitle: GlowText(
+                      item.subtitle,
+                      glowColor: Colors.black12,
+                      blurRadius: 10,
+                    ),
                     trailing: CheckButton(),
                   ),
                 ),
@@ -179,9 +183,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           FocusScope.of(context).requestFocus(titleFocusNode);
                         },
                         margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
-                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
                         child: TextField(
-                          focusNode: titleFocusNode,
+                          //focusNode: titleFocusNode,
                           style: TextStyle(
                             color: Colors.black54,
                           ),
@@ -200,7 +204,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                           FocusScope.of(context).requestFocus(subtitleFocusNode);
                         },
                         margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
-                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        padding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
                         child: TextField(
                           focusNode: subtitleFocusNode,
                           style: TextStyle(
@@ -233,7 +237,10 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               width: 75,
                               height: 50,
                                 child: DefaultTextStyle(
-                                  child: Text('Add'),
+                                  child: GlowText('Add',
+                                    glowColor: Colors.blue,
+                                    blurRadius: 10,
+                                  ),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold, fontSize: 20, color: Colors.blueAccent),
                                 ),
@@ -264,7 +271,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                             },
                           ),
                         ],
-                      )),
+                      )
+                  ),
                   Positioned(
                       bottom: 10,
                       left: 25,
@@ -286,8 +294,9 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                               alignment: Alignment.center,
                               width: 75,
                               height: 50,
-                              child: DefaultTextStyle(
-                                child: Text('Cancel'),
+                              child: GlowText('Cancel',
+                                glowColor: Colors.black38,
+                                blurRadius: 10,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black54
                               ),
@@ -321,8 +330,10 @@ class _addButtonState extends State<addButton> {
         bottom: 0.0,
         right: 0.0,
         child: Row(children: [
-          Text(
+          GlowText(
             'Press here to add Tasks  ',
+            glowColor: globals.validatorColor,
+            blurRadius: 300,
             style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: globals.validatorColor),
           ),
           Icon(
@@ -343,10 +354,12 @@ class _addButtonState extends State<addButton> {
               height: 40,
               width: 26,
               alignment: Alignment.center,
-              child: Icon(Icons.add, color: Colors.black54,size: 28.0,)
+              child: GlowIcon(Icons.add, color: Colors.black54,size: 28.0,glowColor: Colors.black26,)
             ),
           ),
-        ]));
+        ]
+      )
+    );
   }
 }
 
@@ -385,7 +398,7 @@ class _taskManagerState extends State<taskManager> {
                             top: 60.0,
                             bottom: 28,
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
                           child: TextField(
                             style: TextStyle(
                               color: Colors.black54,
@@ -402,7 +415,7 @@ class _taskManagerState extends State<taskManager> {
                         NeumorphicButton(
                           onPressed: (){},
                           margin: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 30),
-                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 15),
                           child: TextField(
                             style: TextStyle(
                               color: Colors.black54,
@@ -442,7 +455,10 @@ class _taskManagerState extends State<taskManager> {
                                 width: 75,
                                 height: 50,
                                 child: DefaultTextStyle(
-                                  child: Text('Cancel'),
+                                  child: GlowText('Cancel',
+                                    glowColor: Colors.black38,
+                                    blurRadius: 10,
+                                  ),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black54),
                                 ),
@@ -454,101 +470,117 @@ class _taskManagerState extends State<taskManager> {
                               ),
                               onPressed: () {
                                 showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      backgroundColor: Color(0xeeefefef),
-                                      actions: <Widget>[
-                                        Container(
-                                          height: screenHeight*0.3,
-                                          width: screenWidth*0.9,
-                                          padding: EdgeInsets.symmetric(horizontal: 20),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Icon(CupertinoIcons.delete_simple,size: 45,color: Colors.redAccent,),
-                                              Text('Are you sure?',
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 20,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              Text("then You can't recover this note.",
-                                                style: TextStyle(
-                                                  color: Colors.black54,
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    backgroundColor: Color(0xeeefefef),
+                                    actions: <Widget>[
+                                      Container(
+                                        height: screenHeight*0.3,
+                                        width: screenWidth*0.9,
+                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            GlowIcon(
+                                              CupertinoIcons.delete_simple,
+                                              size: 45,
+                                              color: Colors.redAccent,
+                                              glowColor: Color(0xFFF95e5e),
+                                              blurRadius: 25,
+                                            ),
+                                            GlowText('Are you sure?',
+                                              glowColor: Colors.black38,
+                                              blurRadius: 10,
+                                              style: TextStyle(
+                                                  color: Colors.black87,
                                                   fontSize: 20,
-                                                ),
-                                                textAlign: TextAlign.center,
                                               ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  NeumorphicButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(_);
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) => taskManager()),
-                                                        );
-                                                      },
-
-                                                    child: Container(
-                                                      margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
-                                                      alignment: Alignment.center,
-                                                      child: Text(
-                                                        'Cancel',
-                                                        style: TextStyle(
-                                                          color: Colors.black87,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  NeumorphicButton(
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            GlowText("You can't recover this note.",
+                                              glowColor: Colors.black38,
+                                              blurRadius: 18,
+                                              style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 20,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                NeumorphicButton(
                                                     onPressed: () {
-                                                      print(globals.myIndex);
-                                                      globals.tasks.removeAt(globals.myIndex);
-                                                      print(globals.tasks);
                                                       Navigator.pop(_);
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) => MyApp()),
+                                                            builder: (context) => taskManager()),
                                                       );
-                                                      Fluttertoast.showToast(
-                                                          msg: "Deleted",
-                                                          toastLength: Toast.LENGTH_LONG,
-                                                          gravity: ToastGravity.BOTTOM,
-                                                          timeInSecForIosWeb: 2,
-                                                          backgroundColor: Colors.white70,
-                                                          textColor: Colors.black54,
-                                                          fontSize: 18.0);
                                                     },
-                                                    child: Container(
-                                                      margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
-                                                      alignment: Alignment.center,
-                                                      child: Text(
-                                                        'Confirm',
-                                                        style: TextStyle(
-                                                          color: Colors.redAccent,
-                                                        ),
+
+                                                  child: Container(
+                                                    margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
+                                                    alignment: Alignment.center,
+                                                    child: GlowText(
+                                                      'Cancel',
+                                                      glowColor: Colors.black38,
+                                                      blurRadius: 10,
+                                                      style: TextStyle(
+                                                        color: Colors.black87,
                                                       ),
                                                     ),
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                  ),
+                                                ),
+                                                NeumorphicButton(
+                                                  onPressed: () {
+                                                    print(globals.myIndex);
+                                                    globals.tasks.removeAt(globals.myIndex);
+                                                    print(globals.tasks);
+                                                    Navigator.pop(_);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => MyApp()),
+                                                    );
+                                                    Fluttertoast.showToast(
+                                                        msg: "Deleted",
+                                                        toastLength: Toast.LENGTH_LONG,
+                                                        gravity: ToastGravity.BOTTOM,
+                                                        timeInSecForIosWeb: 2,
+                                                        backgroundColor: Colors.white70,
+                                                        textColor: Colors.black54,
+                                                        fontSize: 18.0);
+                                                  },
+                                                  child: Container(
+                                                    margin: EdgeInsets.symmetric(horizontal: 2,vertical: 7),
+                                                    alignment: Alignment.center,
+                                                    child: GlowText(
+                                                      'Confirm',
+                                                      glowColor: Colors.red,
+                                                      blurRadius: 10,
+                                                      style: TextStyle(
+                                                        color: Colors.redAccent,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ));
+                                      ),
+                                    ],
+                                  )
+                                );
                               },
                               child: Container(
                                 alignment: Alignment.center,
                                 width: 75,
                                 height: 50,
-                                child: DefaultTextStyle(
-                                  child: Text('Delete'),
+                                child: GlowText('Delete',
+                                  glowColor: Colors.redAccent,
+                                  blurRadius: 15,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
@@ -586,24 +618,28 @@ class _taskManagerState extends State<taskManager> {
                                 width: 75,
                                 height: 50,
                                 child: DefaultTextStyle(
-                                  child: Text('Done'),
+                                  child: GlowText('Done',
+                                    glowColor: Colors.blue,
+                                    blurRadius: 10,
+                                  ),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
-                                      color: Colors.blueAccent),
+                                      color: Colors.blueAccent
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }
